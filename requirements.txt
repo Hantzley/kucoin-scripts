@@ -1,0 +1,6 @@
+python-kucoin
+TA-Lib
+numpy
+pandas
+websocket_client
+pprint
