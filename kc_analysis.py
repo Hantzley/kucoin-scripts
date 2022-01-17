@@ -65,3 +65,19 @@ dot_df = get_klines_df('DOT-USDT',interval,time_start)
 
 engulfing_days = dot_df[dot_df['engulfing'] != 0]
 morningstar_days = dot_df[dot_df['morning_star'] != 0]
+
+close = dot_df['close']
+rsi = talib.RSI(close, timeperiod=14)
+upperBB, middleBB, lowerBB = talib.BBANDS(close, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0)
+upperBBrsi, MiddleBBrsi, lowerBBrsi = talib.BBANDS(rsi, timeperiod=50, nbdevup=2, nbdevdn=2, matype=0)
+normrsi = (rsi - lowerBBrsi) / (upperBBrsi - lowerBBrsi)
+
+
+dot_df['rsi'] = rsi
+dot_df['upperBB'] = rsi
+dot_df['middleBB'] = rsi
+dot_df['lowerBB'] = rsi
+dot_df['upperBBrsi'] = rsi
+dot_df['MiddleBBrsi'] = rsi
+dot_df['lowerBBrsi'] = rsi
+dot_df['normrsi'] = rsi
