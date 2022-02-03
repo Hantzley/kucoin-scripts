@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 time_period = 60 #days
 time_start = datetime.timestamp(datetime.now() - timedelta(days=time_period))
 #print (time_start)
+utc_offset = 8 #hours
 
 symbols = ['DOT-USDT','MATIC-USDT','BTC-USDT']
 interval = '1hour'
@@ -56,28 +57,28 @@ def get_klines_df(symbol,interval,time_start):
     df = df.sort_values("timestamp", ascending=True, ignore_index=True)
 
     df['datetime'] = pd.to_datetime(df['timestamp'],unit='s')
+    df['datetime'] = df['datetime'] + pd.DateOffset(hours=utc_offset)
     df['morning_star'] = talib.CDLMORNINGSTAR(df['open'],df['high'],df['low'],df['close'])
     df['engulfing'] = talib.CDLENGULFING(df['open'],df['high'],df['low'],df['close'])
 
     return df
 
-dot_df = get_klines_df('DOT-USDT',interval,time_start)
+df = get_klines_df('LTC-USDT',interval,time_start)
 
-engulfing_days = dot_df[dot_df['engulfing'] != 0]
-morningstar_days = dot_df[dot_df['morning_star'] != 0]
-
-close = dot_df['close']
+close = df['close']
 rsi = talib.RSI(close, timeperiod=14)
 upperBB, middleBB, lowerBB = talib.BBANDS(close, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0)
 upperBBrsi, MiddleBBrsi, lowerBBrsi = talib.BBANDS(rsi, timeperiod=50, nbdevup=2, nbdevdn=2, matype=0)
 normrsi = (rsi - lowerBBrsi) / (upperBBrsi - lowerBBrsi)
 
+df['rsi'] = rsi
+df['upperBB'] = rsi
+df['middleBB'] = rsi
+df['lowerBB'] = rsi
+df['upperBBrsi'] = rsi
+df['MiddleBBrsi'] = rsi
+df['lowerBBrsi'] = rsi
+df['normrsi'] = rsi
 
-dot_df['rsi'] = rsi
-dot_df['upperBB'] = rsi
-dot_df['middleBB'] = rsi
-dot_df['lowerBB'] = rsi
-dot_df['upperBBrsi'] = rsi
-dot_df['MiddleBBrsi'] = rsi
-dot_df['lowerBBrsi'] = rsi
-dot_df['normrsi'] = rsi
+engulfing_days = df[df['engulfing'] != 0]
+morningstar_days = df[df['morning_star'] != 0]
